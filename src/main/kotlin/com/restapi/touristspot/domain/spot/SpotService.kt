@@ -15,6 +15,8 @@ class SpotService(private val spotRepository: SpotRepository) {
             Circle(Point(longitude, latitude), Distance(5.0, Metrics.KILOMETERS))
     )
 
+    fun findByName(name: String) = spotRepository.findByName(name)
+
     @Transactional
     fun saveAll(spots: List<Spot>) = spotRepository.saveAll(spots)
 
@@ -23,5 +25,6 @@ class SpotService(private val spotRepository: SpotRepository) {
 
     @Transactional
     fun save(spot: Spot) = spotRepository.save(spot)
+
 
 }

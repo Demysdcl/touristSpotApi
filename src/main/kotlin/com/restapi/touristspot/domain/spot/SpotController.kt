@@ -15,6 +15,9 @@ class SpotController {
     fun spotInFiveKMFrom(@RequestParam longitude: Double, @RequestParam latitude: Double) = spotService
             .findSpotsInFiveKm(longitude, latitude)
 
+    @GetMapping("/name")
+    fun spotByName(@RequestParam name: String) = spotService.findByName(name)
+
     @PostMapping
     fun saveSpot(@RequestBody spot: Spot) = spotService.save(spot)
 
