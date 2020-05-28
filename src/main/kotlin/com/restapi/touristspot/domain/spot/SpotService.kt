@@ -21,4 +21,7 @@ class SpotService(private val spotRepository: SpotRepository) {
     @Transactional
     fun deleteAll(spots: List<Spot>) = spotRepository.deleteAll(spots)
 
+    @Transactional
+    fun save(spot: Spot) = spotRepository.save(spot)
+
 }
