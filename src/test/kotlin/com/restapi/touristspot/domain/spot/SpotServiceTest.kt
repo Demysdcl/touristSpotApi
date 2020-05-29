@@ -2,6 +2,7 @@ package com.restapi.touristspot.domain.spot
 
 import Spot
 import com.restapi.touristspot.domain.category.Category
+import com.restapi.touristspot.domain.category.CategoryRepository
 import com.restapi.touristspot.domain.user.User
 import com.restapi.touristspot.domain.user.UserRepository
 import org.junit.jupiter.api.AfterEach
@@ -22,14 +23,21 @@ internal class SpotServiceTest {
     @Autowired
     lateinit var userRepository: UserRepository
 
+    @Autowired
+    lateinit var categoryRepository: CategoryRepository
+
     lateinit var spots: List<Spot>
 
     lateinit var user: User
 
+    lateinit var categories: List<Category>
+
     @BeforeEach
     fun init() {
         user = userRepository.save(User(name = "Demys Cota", email = "demysdcl@gmail.com"))
+        categories = categoryRepository.saveAll(createCategories())
         spots = spotService.saveAll(createSpots())
+
     }
 
     @AfterEach
@@ -38,15 +46,21 @@ internal class SpotServiceTest {
         userRepository.deleteAll()
     }
 
+    fun createCategories() = arrayListOf(
+            Category("Park"),
+            Category("Museum"),
+            Category("Monument")
+    )
+
     fun createSpots() = arrayListOf(
-            Spot(name = "Park 1", category = Category("Park"), location = arrayOf(-49.316584, -25.435113), createBy = user),
-            Spot(name = "Park 2", category = Category("Park"), location = arrayOf(-49.316585, -25.435114), createBy = user),
-            Spot(name = "Park 3", category = Category("Park"), location = arrayOf(-49.316586, -25.435115), createBy = user),
-            Spot(name = "Jardim Botânico", category = Category("Park"), location = arrayOf(-49.2453133, -25.4407956), createBy = user),
-            Spot(name = "Bosque do Alemão", category = Category("Park"), location = arrayOf(-49.287397, -25.405349), createBy = user),
-            Spot(name = "Museu Oscar Niermeyer", category = Category("Museum"), location = arrayOf(-49.267196, -25.410085), createBy = user),
-            Spot(name = "Parque Tanguá", category = Category("Park"), location = arrayOf(-49.282461, -25.378846), createBy = user),
-            Spot(name = "Centro histórico de Curitiba", category = Category("Museum"), location = arrayOf(-49.272255, -25.427730), createBy = user)
+            Spot(name = "Park 1", category = categories[0], location = arrayOf(-49.316584, -25.435113), createBy = user),
+            Spot(name = "Park 2", category = categories[0], location = arrayOf(-49.316585, -25.435114), createBy = user),
+            Spot(name = "Park 3", category = categories[0], location = arrayOf(-49.316586, -25.435115), createBy = user),
+            Spot(name = "Jardim Botânico", category = categories[0], location = arrayOf(-49.2453133, -25.4407956), createBy = user),
+            Spot(name = "Bosque do Alemão", category = categories[0], location = arrayOf(-49.287397, -25.405349), createBy = user),
+            Spot(name = "Museu Oscar Niermeyer", category = categories[1], location = arrayOf(-49.267196, -25.410085), createBy = user),
+            Spot(name = "Parque Tanguá", category = categories[0], location = arrayOf(-49.282461, -25.378846), createBy = user),
+            Spot(name = "Centro histórico de Curitiba", category = categories[1], location = arrayOf(-49.272255, -25.427730), createBy = user)
     )
 
 
@@ -124,5 +138,20 @@ internal class SpotServiceTest {
             "Monument",
             -1.826502,
             51.183236)
+
+    @Test
+    fun `given a comment do Spot then save comment in Spot`() {
+        val comment = spotService.addCommentInSpot(spots[0].id!!, "Cool park")
+        assertEquals("Cool park", comment.description)
+    }
+
+    @Test
+    fun `given an nonexistent id from Spot to save comment then thorws expecption`() {
+        val expectation = assertThrows(RuntimeException::class.java) {
+            spotService.addCommentInSpot("wrongID", "Cool park")
+        }
+        assertEquals("Tourist Spot not found", expectation.message)
+    }
+
 
 }
