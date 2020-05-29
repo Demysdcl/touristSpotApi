@@ -1,7 +1,7 @@
 package com.restapi.touristspot.domain.spot
 
 import Spot
-import com.restapi.touristspot.domain.category.Category
+import com.restapi.touristspot.domain.category.CategoryService
 import com.restapi.touristspot.domain.comment.Comment
 import com.restapi.touristspot.domain.comment.CommentRepository
 import com.restapi.touristspot.domain.picture.Picture
@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile
 
 @Service
 class SpotService(private val spotRepository: SpotRepository,
+                  private val categoryService: CategoryService,
                   private val commentRepository: CommentRepository,
                   private val userRepository: UserRepository,
                   private val pictureRepository: PictureRepository) {
@@ -45,7 +46,7 @@ class SpotService(private val spotRepository: SpotRepository,
                 if (it.isPresent) throw RuntimeException("Tourist spot already exists")
                 val spot = spotRepository.save(Spot(
                         name = name,
-                        category = Category(category),
+                        category = categoryService.find(category),
                         location = arrayOf(longitude, latitude),
                         createBy = temporaryUser()
                 ))

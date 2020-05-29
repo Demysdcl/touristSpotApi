@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.mock.web.MockMultipartFile
 import java.util.stream.IntStream
 
+
 @SpringBootTest
 internal class SpotServiceTest {
 
@@ -148,7 +149,7 @@ internal class SpotServiceTest {
     @Test
     fun `given an nonexistent id from Spot to save comment then thorws expecption`() {
         val expectation = assertThrows(RuntimeException::class.java) {
-            spotService.addCommentInSpot("wrongID", "Cool park")
+            val comment = spotService.addCommentInSpot("wrong id", "Cool park")
         }
         assertEquals("Tourist Spot not found", expectation.message)
     }
