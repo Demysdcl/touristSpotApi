@@ -154,5 +154,23 @@ internal class SpotServiceTest {
         assertEquals("Tourist Spot not found", expectation.message)
     }
 
+    @Test
+    fun `given an spot id then return its comments`() {
+        val spotID = spots[0].id!!
+        spotService.addCommentInSpot(spotID, "Cool park")
+        spotService.addCommentInSpot(spotID, "The First park")
+        val commments = spotService.findComments(spotID)
+        assertFalse(commments.isEmpty())
+        assertEquals(2, commments.size)
+    }
+
+    @Test
+    fun `given an nonexistent id from Spot to get comments then thorws expecption`() {
+        val expectation = assertThrows(RuntimeException::class.java) {
+            spotService.findComments("wrong id")
+        }
+        assertEquals("Tourist Spot not found", expectation.message)
+    }
+
 
 }

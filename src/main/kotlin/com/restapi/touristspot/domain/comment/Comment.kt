@@ -15,5 +15,4 @@ data class Comment(
         val aboutOf: Spot,
         @DBRef
         val commentedBy: User = User()
-
 )

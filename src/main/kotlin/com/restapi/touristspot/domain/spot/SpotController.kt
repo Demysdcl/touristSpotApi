@@ -1,5 +1,6 @@
 package com.restapi.touristspot.domain.spot
 
+import com.restapi.touristspot.domain.comment.Comment
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -29,4 +30,9 @@ class SpotController {
                @RequestParam("latitude") latitude: Double
     ) = spotService.save(picture, name, category, longitude, latitude)
 
+    @PostMapping("/{spotId}/comments")
+    fun addCommentInSpot(@PathVariable spotId: String, @RequestBody comment: String) = spotService.addCommentInSpot(spotId, comment)
+
+    @GetMapping("/{spotId}/comments")
+    fun findComments(@PathVariable spotId: String): List<Comment> = spotService.findComments(spotId)
 }

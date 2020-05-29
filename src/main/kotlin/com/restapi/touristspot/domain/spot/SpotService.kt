@@ -64,6 +64,10 @@ class SpotService(private val spotRepository: SpotRepository,
                 commentRepository.save(Comment(description = comment, aboutOf = it, commentedBy = temporaryUser()))
             }.orElseThrow { RuntimeException("Tourist Spot not found") }
 
-    fun temporaryUser() = userRepository.findById("test")
+    fun findComments(spotId: String): List<Comment> = spotRepository.findById(spotId)
+            .map { commentRepository.findByAboutOf(it) }
+            .orElseThrow { RuntimeException("Tourist Spot not found") }
+
+    fun temporaryUser(): User = userRepository.findById("test")
             .orElse(userRepository.save(User(id = "test", name = "Demys", email = "demysdcl@gmail.com")))
 }
