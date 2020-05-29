@@ -38,4 +38,7 @@ class SpotController {
 
     @PostMapping("/{spotId}/pictures")
     fun addPictures(@PathVariable spotId: String, pictures: Array<MultipartFile>) = spotService.addPictures(spotId, pictures)
+
+    @DeleteMapping("/{spotId}/pictures/{pictureId}")
+    fun deletePicture(@PathVariable pictureId: String) = spotService.deletePicture(pictureId)
 }

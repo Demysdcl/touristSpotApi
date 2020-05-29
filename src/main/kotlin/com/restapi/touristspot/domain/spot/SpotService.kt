@@ -25,6 +25,7 @@ class SpotService(private val spotRepository: SpotRepository,
                   private val userRepository: UserRepository,
                   private val pictureRepository: PictureRepository) {
 
+
     val notFoundMessage = "Tourist Spot not found"
 
     fun findSpotsInFiveKm(longitude: Double, latitude: Double): List<Spot> = spotRepository.findByLocationWithin(
@@ -46,7 +47,7 @@ class SpotService(private val spotRepository: SpotRepository,
     fun save(picture: MultipartFile, name: String, category: String, longitude: Double, latitude: Double): Spot =
             spotRepository.findByName(name).let {
                 if (it.isPresent) throw RuntimeException("Tourist spot already exists")
-                return spotRepository.save(Spot(
+                return@let spotRepository.save(Spot(
                         name = name,
                         category = categoryService.find(category),
                         location = arrayOf(longitude, latitude),
@@ -76,6 +77,11 @@ class SpotService(private val spotRepository: SpotRepository,
                         image = Binary(BsonBinarySubType.BINARY, it.bytes),
                         from = spot)
             }
+
+    fun deletePicture(pictureId: String): Unit = pictureRepository.findById(pictureId)
+            .filter { it.takenBy == temporaryUser() }
+            .map { pictureRepository.delete(it) }
+            .orElseThrow { RuntimeException("Picture not found") }
 
 
     fun temporaryUser(): User = userRepository.findById("test")

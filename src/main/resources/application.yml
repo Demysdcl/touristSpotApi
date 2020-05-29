@@ -1,6 +1,26 @@
+environment: Default
+
 spring:
   data:
     mongodb:
       database: touristspot
 
+---
 
+# Development configurations
+spring:
+  profiles:
+    - development
+  data:
+    mongodb:
+      database: touristspot
+
+---
+
+# Testing configurations
+spring:
+  profiles:
+    - test
+  data:
+    mongodb:
+      database: test

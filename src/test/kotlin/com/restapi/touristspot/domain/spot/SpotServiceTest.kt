@@ -3,6 +3,7 @@ package com.restapi.touristspot.domain.spot
 import Spot
 import com.restapi.touristspot.domain.category.Category
 import com.restapi.touristspot.domain.category.CategoryRepository
+import com.restapi.touristspot.domain.picture.PictureRepository
 import com.restapi.touristspot.domain.user.User
 import com.restapi.touristspot.domain.user.UserRepository
 import org.junit.jupiter.api.AfterEach
@@ -12,17 +13,23 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.mock.web.MockMultipartFile
+import org.springframework.test.context.ActiveProfiles
 import java.util.stream.IntStream
 
 
 @SpringBootTest
+@ActiveProfiles("test")
 internal class SpotServiceTest {
+
 
     @Autowired
     lateinit var spotService: SpotService
 
     @Autowired
     lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var pictureRepository: PictureRepository
 
     @Autowired
     lateinit var categoryRepository: CategoryRepository
@@ -33,18 +40,19 @@ internal class SpotServiceTest {
 
     lateinit var categories: List<Category>
 
+
     @BeforeEach
     fun init() {
         user = userRepository.save(User(name = "Demys Cota", email = "demysdcl@gmail.com"))
         categories = categoryRepository.saveAll(createCategories())
         spots = spotService.saveAll(createSpots())
-
     }
 
     @AfterEach
     fun destroy() {
         spotService.deleteAll(spots)
         userRepository.deleteAll()
+        pictureRepository.deleteAll()
     }
 
     fun createCategories() = arrayListOf(
@@ -147,7 +155,7 @@ internal class SpotServiceTest {
     }
 
     @Test
-    fun `given an nonexistent id Spot to save comment then thorws expecption`() {
+    fun `given a nonexistent spot id  to save comment then thorws expecption`() {
         val exception = assertThrows(RuntimeException::class.java) {
             spotService.addCommentInSpot("wrong-id", "Cool park")
         }
@@ -155,7 +163,7 @@ internal class SpotServiceTest {
     }
 
     @Test
-    fun `given an spot id then return its comments`() {
+    fun `given a spot id then return its comments`() {
         val spotID = spots[0].id!!
         spotService.addCommentInSpot(spotID, "Cool park")
         spotService.addCommentInSpot(spotID, "The First park")
@@ -165,7 +173,7 @@ internal class SpotServiceTest {
     }
 
     @Test
-    fun `given an nonexistent id Spot to get comments then thorws expecption`() {
+    fun `given an nonexistent spot id to get comments then thorws expecption`() {
         val exception = assertThrows(RuntimeException::class.java) {
             spotService.findComments("wrong-id")
         }
@@ -173,7 +181,7 @@ internal class SpotServiceTest {
     }
 
     @Test
-    fun `given a picture and an id spot then save the picture`() {
+    fun `given a pictures and a spot id then save the picture`() {
         val picture = spotService.addPictures(
                 spots[0].id!!,
                 arrayOf(MockMultipartFile("picture.png", ByteArray(0)))
@@ -182,7 +190,7 @@ internal class SpotServiceTest {
     }
 
     @Test
-    fun `given given an nonexistent id Spot to save picture then thorws expecption`() {
+    fun `given given a nonexistent id Spot to save pictures then thorws expecption`() {
         val exception = assertThrows(RuntimeException::class.java) {
             spotService.addPictures("wrong-id",
                     arrayOf(MockMultipartFile("picture.png", ByteArray(0)))
@@ -191,5 +199,14 @@ internal class SpotServiceTest {
         assertEquals("Tourist Spot not found", exception.message)
     }
 
-
+    @Test
+    fun `given a spot id and picture id then remove picture`() {
+        val pictures = spotService.addPictures(spots[0].id!!,
+                arrayOf(MockMultipartFile("picture.png", ByteArray(0)))
+        )
+        assert(pictureRepository.findById(pictures[0].id!!).isPresent)
+        spotService.deletePicture(pictures[0].id!!)
+        assertFalse(pictureRepository.findById(pictures[0].id!!).isPresent)
+    }
+    
 }

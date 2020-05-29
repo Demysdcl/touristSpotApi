@@ -9,4 +9,10 @@ data class User(
         val id: String? = null,
         val name: String = "",
         val email: String = ""
-)
+) {
+    override fun equals(other: Any?) = other === this ||
+            (other is User && id == other.id)
+
+    override fun hashCode() = id?.hashCode() ?: 0
+
+}
