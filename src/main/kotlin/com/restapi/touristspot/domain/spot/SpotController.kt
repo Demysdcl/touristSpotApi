@@ -35,4 +35,7 @@ class SpotController {
 
     @GetMapping("/{spotId}/comments")
     fun findComments(@PathVariable spotId: String): List<Comment> = spotService.findComments(spotId)
+
+    @PostMapping("/{spotId}/pictures")
+    fun addPictures(@PathVariable spotId: String, pictures: Array<MultipartFile>) = spotService.addPictures(spotId, pictures)
 }

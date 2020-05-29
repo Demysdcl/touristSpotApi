@@ -127,10 +127,10 @@ internal class SpotServiceTest {
 
 
     fun `given a name already exists thorws expecption`() {
-        val expectation = assertThrows(RuntimeException::class.java) {
+        val exception = assertThrows(RuntimeException::class.java) {
             createSpot()
         }
-        assertEquals("Tourist spot already exists", expectation.message)
+        assertEquals("Tourist spot already exists", exception.message)
     }
 
     fun createSpot() = spotService.save(
@@ -147,11 +147,11 @@ internal class SpotServiceTest {
     }
 
     @Test
-    fun `given an nonexistent id from Spot to save comment then thorws expecption`() {
-        val expectation = assertThrows(RuntimeException::class.java) {
-            val comment = spotService.addCommentInSpot("wrong id", "Cool park")
+    fun `given an nonexistent id Spot to save comment then thorws expecption`() {
+        val exception = assertThrows(RuntimeException::class.java) {
+            spotService.addCommentInSpot("wrong-id", "Cool park")
         }
-        assertEquals("Tourist Spot not found", expectation.message)
+        assertEquals("Tourist Spot not found", exception.message)
     }
 
     @Test
@@ -159,17 +159,36 @@ internal class SpotServiceTest {
         val spotID = spots[0].id!!
         spotService.addCommentInSpot(spotID, "Cool park")
         spotService.addCommentInSpot(spotID, "The First park")
-        val commments = spotService.findComments(spotID)
-        assertFalse(commments.isEmpty())
-        assertEquals(2, commments.size)
+        val comments = spotService.findComments(spotID)
+        assertFalse(comments.isEmpty())
+        assertEquals(2, comments.size)
     }
 
     @Test
-    fun `given an nonexistent id from Spot to get comments then thorws expecption`() {
-        val expectation = assertThrows(RuntimeException::class.java) {
-            spotService.findComments("wrong id")
+    fun `given an nonexistent id Spot to get comments then thorws expecption`() {
+        val exception = assertThrows(RuntimeException::class.java) {
+            spotService.findComments("wrong-id")
         }
-        assertEquals("Tourist Spot not found", expectation.message)
+        assertEquals("Tourist Spot not found", exception.message)
+    }
+
+    @Test
+    fun `given a picture and an id spot then save the picture`() {
+        val picture = spotService.addPictures(
+                spots[0].id!!,
+                arrayOf(MockMultipartFile("picture.png", ByteArray(0)))
+        )
+        assertNotNull(picture)
+    }
+
+    @Test
+    fun `given given an nonexistent id Spot to save picture then thorws expecption`() {
+        val exception = assertThrows(RuntimeException::class.java) {
+            spotService.addPictures("wrong-id",
+                    arrayOf(MockMultipartFile("picture.png", ByteArray(0)))
+            )
+        }
+        assertEquals("Tourist Spot not found", exception.message)
     }
 
 

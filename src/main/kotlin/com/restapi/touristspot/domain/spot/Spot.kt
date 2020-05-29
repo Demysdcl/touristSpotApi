@@ -1,5 +1,7 @@
 import com.restapi.touristspot.domain.category.Category
 import com.restapi.touristspot.domain.user.User
+import org.bson.BsonBinarySubType
+import org.bson.types.Binary
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
@@ -10,7 +12,7 @@ data class Spot(
         val id: String? = null,
         val name: String = "",
         val location: Array<Double> = emptyArray(),
-
+        val picture: Binary = Binary(BsonBinarySubType.BINARY, ByteArray(0)),
         @DBRef
         val category: Category = Category(),
 

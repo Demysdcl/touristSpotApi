@@ -6,6 +6,6 @@ import org.springframework.stereotype.Service
 class CategoryService(private val categoryRepository: CategoryRepository) {
 
     fun find(name: String) = categoryRepository.findById(name)
-            .orElseThrow { RuntimeException("Category not found!") }
+            .orElse(categoryRepository.save(Category(name)))
 
 }

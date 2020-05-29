@@ -25,6 +25,8 @@ class SpotService(private val spotRepository: SpotRepository,
                   private val userRepository: UserRepository,
                   private val pictureRepository: PictureRepository) {
 
+    val notFoundMessage = "Tourist Spot not found"
+
     fun findSpotsInFiveKm(longitude: Double, latitude: Double): List<Spot> = spotRepository.findByLocationWithin(
             Circle(Point(longitude, latitude), Distance(5.0, Metrics.KILOMETERS))
     )
@@ -32,7 +34,7 @@ class SpotService(private val spotRepository: SpotRepository,
     fun findAll(): List<Spot> = spotRepository.findAll()
 
     fun findByName(name: String): Spot = spotRepository.findByName(name)
-            .orElseThrow { RuntimeException("Tourist Spot not found") }
+            .orElseThrow { RuntimeException(notFoundMessage) }
 
     @Transactional
     fun saveAll(spots: List<Spot>): List<Spot> = spotRepository.saveAll(spots)
@@ -44,29 +46,37 @@ class SpotService(private val spotRepository: SpotRepository,
     fun save(picture: MultipartFile, name: String, category: String, longitude: Double, latitude: Double): Spot =
             spotRepository.findByName(name).let {
                 if (it.isPresent) throw RuntimeException("Tourist spot already exists")
-                val spot = spotRepository.save(Spot(
+                return spotRepository.save(Spot(
                         name = name,
                         category = categoryService.find(category),
                         location = arrayOf(longitude, latitude),
+                        picture = Binary(BsonBinarySubType.BINARY, picture.bytes),
                         createBy = temporaryUser()
                 ))
-                createPicture(picture, spot)
-                return@let spot
             }
-
-
-    fun createPicture(file: MultipartFile, spot: Spot) = pictureRepository.save(
-            Picture(takenBy = temporaryUser(), image = Binary(BsonBinarySubType.BINARY, file.bytes), from = spot))
 
     @Transactional
     fun addCommentInSpot(id: String, comment: String): Comment = spotRepository.findById(id)
             .map {
                 commentRepository.save(Comment(description = comment, aboutOf = it, commentedBy = temporaryUser()))
-            }.orElseThrow { RuntimeException("Tourist Spot not found") }
+            }.orElseThrow { RuntimeException(notFoundMessage) }
 
     fun findComments(spotId: String): List<Comment> = spotRepository.findById(spotId)
             .map { commentRepository.findByAboutOf(it) }
-            .orElseThrow { RuntimeException("Tourist Spot not found") }
+            .orElseThrow { RuntimeException(notFoundMessage) }
+
+    fun addPictures(spotId: String, files: Array<MultipartFile>): List<Picture> = spotRepository.findById(spotId)
+            .map {
+                pictureRepository.saveAll(convertFileToPicture(files, it))
+            }.orElseThrow { RuntimeException(notFoundMessage) }
+
+    fun convertFileToPicture(files: Array<MultipartFile>, spot: Spot) = files.asList()
+            .map {
+                Picture(takenBy = temporaryUser(),
+                        image = Binary(BsonBinarySubType.BINARY, it.bytes),
+                        from = spot)
+            }
+
 
     fun temporaryUser(): User = userRepository.findById("test")
             .orElse(userRepository.save(User(id = "test", name = "Demys", email = "demysdcl@gmail.com")))
