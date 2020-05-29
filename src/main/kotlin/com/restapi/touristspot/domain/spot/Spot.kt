@@ -1,16 +1,31 @@
 import com.restapi.touristspot.domain.category.Category
+import com.restapi.touristspot.domain.comment.Comment
+import com.restapi.touristspot.domain.picture.Picture
+import com.restapi.touristspot.domain.user.User
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 
-@Document
+@Document(collection = "Spot")
 data class Spot(
         @Id
         val id: String? = null,
         val name: String = "",
+
+        val location: Array<Double> = emptyArray(),
+
+        val comment: List<Comment> = mutableListOf(),
+
         @DBRef
         val category: Category = Category(),
-        val location: Array<Double> = emptyArray()
+
+        @DBRef(lazy = true)
+        val pictures: List<Picture> = emptyList(),
+
+        @DBRef
+        val createBy: User = User()
+
+
 ) {
     override fun equals(other: Any?) = this === other || (other is Spot
             && name == other.name

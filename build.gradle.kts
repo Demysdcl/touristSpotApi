@@ -18,9 +18,15 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-web")
+//    implementation("org.springframework.boot:spring-boot-starter-security")
+//    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+//    implementation("org.webjars:jquery:3.4.1")
+//    implementation("org.webjars:bootstrap:4.3.1")
+//    implementation("org.webjars:js-cookie:2.1.0")
+//    implementation("org.webjars:webjars-locator-core")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

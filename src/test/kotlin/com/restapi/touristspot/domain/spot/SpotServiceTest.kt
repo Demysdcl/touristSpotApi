@@ -2,13 +2,15 @@ package com.restapi.touristspot.domain.spot
 
 import Spot
 import com.restapi.touristspot.domain.category.Category
+import com.restapi.touristspot.domain.user.User
+import com.restapi.touristspot.domain.user.UserRepository
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.mock.web.MockMultipartFile
 import java.util.stream.IntStream
 
 @SpringBootTest
@@ -16,28 +18,37 @@ internal class SpotServiceTest {
 
     @Autowired
     lateinit var spotService: SpotService
+
+    @Autowired
+    lateinit var userRepository: UserRepository
+
     lateinit var spots: List<Spot>
+
+    lateinit var user: User
 
     @BeforeEach
     fun init() {
+        user = userRepository.save(User(name = "Demys Cota", email = "demysdcl@gmail.com"))
         spots = spotService.saveAll(createSpots())
     }
 
     @AfterEach
     fun destroy() {
         spotService.deleteAll(spots)
+        userRepository.deleteAll()
     }
 
     fun createSpots() = arrayListOf(
-            Spot(name = "Park 1", category = Category("Park"), location = arrayOf(-49.316584, -25.435113)),
-            Spot(name = "Park 2", category = Category("Park"), location = arrayOf(-49.316585, -25.435114)),
-            Spot(name = "Park 3", category = Category("Park"), location = arrayOf(-49.316586, -25.435115)),
-            Spot(name = "Jardim Botânico", category = Category("Park"), location = arrayOf(-49.2453133, -25.4407956)),
-            Spot(name = "Bosque do Alemão", category = Category("Park"), location = arrayOf(-49.287397, -25.405349)),
-            Spot(name = "Museu Oscar Niermeyer", category = Category("Museum"), location = arrayOf(-49.267196, -25.410085)),
-            Spot(name = "Parque Tanguá", category = Category("Park"), location = arrayOf(-49.282461, -25.378846)),
-            Spot(name = "Centro histórico de Curitiba", category = Category("Museum"), location = arrayOf(-49.272255, -25.427730))
+            Spot(name = "Park 1", category = Category("Park"), location = arrayOf(-49.316584, -25.435113), createBy = user),
+            Spot(name = "Park 2", category = Category("Park"), location = arrayOf(-49.316585, -25.435114), createBy = user),
+            Spot(name = "Park 3", category = Category("Park"), location = arrayOf(-49.316586, -25.435115), createBy = user),
+            Spot(name = "Jardim Botânico", category = Category("Park"), location = arrayOf(-49.2453133, -25.4407956), createBy = user),
+            Spot(name = "Bosque do Alemão", category = Category("Park"), location = arrayOf(-49.287397, -25.405349), createBy = user),
+            Spot(name = "Museu Oscar Niermeyer", category = Category("Museum"), location = arrayOf(-49.267196, -25.410085), createBy = user),
+            Spot(name = "Parque Tanguá", category = Category("Park"), location = arrayOf(-49.282461, -25.378846), createBy = user),
+            Spot(name = "Centro histórico de Curitiba", category = Category("Museum"), location = arrayOf(-49.272255, -25.427730), createBy = user)
     )
+
 
     @Test
     fun `given latitude and longitude near 3 park return the 3 parks`() {
@@ -75,13 +86,43 @@ internal class SpotServiceTest {
     @Test
     fun `given name Jardim Botânico return then return Spot Jardim Botânico`() {
         val foundByName = spotService.findByName("Jardim Botânico")
-        assert(foundByName.isPresent)
-        assertEquals("Jardim Botânico", foundByName.get().name)
+        assertNotNull(foundByName)
+        assertEquals("Jardim Botânico", foundByName.name)
     }
 
     @Test
     fun `given nonexistent name in Spot Collecion return then return Empty Optional`() {
-        val foundByName = spotService.findByName("Cristo Redentor")
-        assertFalse(foundByName.isPresent)
+        val expection = assertThrows(RuntimeException::class.java) {
+            spotService.findByName("Cristo Redentor")
+        }
+        assertEquals("Tourist Spot not found", expection.message)
     }
+
+    @Test
+    fun `save Spot tests`() {
+        `given a params and a File then save new Spot`()
+        `given a name already exists thorws expecption`()
+    }
+
+    fun `given a params and a File then save new Spot`() {
+        val newSpot = createSpot()
+        assertNotNull(newSpot)
+        assertEquals("Stonehenge", newSpot.name)
+    }
+
+
+    fun `given a name already exists thorws expecption`() {
+        val expectation = assertThrows(RuntimeException::class.java) {
+            createSpot()
+        }
+        assertEquals("Tourist spot already exists", expectation.message)
+    }
+
+    fun createSpot() = spotService.save(
+            MockMultipartFile("picture.png", ByteArray(Int.SIZE_BYTES)),
+            "Stonehenge",
+            "Monument",
+            -1.826502,
+            51.183236)
+
 }
