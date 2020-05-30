@@ -12,24 +12,24 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(ObjectNotFoundException::class)
     fun handleObjectNotFound(e: ObjectNotFoundException, request: HttpServletRequest) =
-            createResponseEntity(e, request, HttpStatus.NOT_FOUND)
+            createResponseEntity(e, request, HttpStatus.NOT_FOUND, "Not found")
 
     @ExceptionHandler(ObjectAlreadyExistsException::class)
     fun handleObjectAlreadyExist(e: ObjectAlreadyExistsException, request: HttpServletRequest) =
-            createResponseEntity(e, request, HttpStatus.CONFLICT)
+            createResponseEntity(e, request, HttpStatus.CONFLICT, "Already exists")
 
 
-    private fun createResponseEntity(e: RuntimeException, request: HttpServletRequest, httpStatus: HttpStatus): ResponseEntity<StandardErrorResponse> {
+    private fun createResponseEntity(e: RuntimeException, request: HttpServletRequest, httpStatus: HttpStatus, msg: String): ResponseEntity<StandardErrorResponse> {
         return ResponseEntity
                 .status(httpStatus)
-                .body(createStandardError(e, request, httpStatus.value()))
+                .body(createStandardError(e, request, httpStatus.value(), msg))
     }
 
-    private fun createStandardError(e: RuntimeException, request: HttpServletRequest, httpStatus: Int): StandardErrorResponse {
+    private fun createStandardError(e: RuntimeException, request: HttpServletRequest, httpStatus: Int, msg: String): StandardErrorResponse {
         return StandardErrorResponse(
                 System.currentTimeMillis(),
                 httpStatus,
-                "Not found",
+                msg,
                 e.message ?: "",
                 request.requestURI
         )
