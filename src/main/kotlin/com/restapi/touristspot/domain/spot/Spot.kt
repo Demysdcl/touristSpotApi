@@ -13,12 +13,11 @@ data class Spot(
         val name: String = "",
         val upvote: Long = 0,
         val location: Array<Double> = emptyArray(),
-        val picture: Binary = Binary(BsonBinarySubType.BINARY, ByteArray(0)),
         @DBRef
         val category: Category = Category(),
-
         @DBRef
-        val createBy: User = User()
+        val createdBy: User = User(),
+        val picture: Binary = Binary(BsonBinarySubType.BINARY, ByteArray(0))
 
 
 ) {
@@ -28,5 +27,4 @@ data class Spot(
             && location.contentEquals(other.location))
 
     override fun hashCode() = 31 * (name.hashCode() + category.hashCode() + location.contentHashCode())
-
 }

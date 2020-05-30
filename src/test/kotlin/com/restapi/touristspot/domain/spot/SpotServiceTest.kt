@@ -43,7 +43,7 @@ internal class SpotServiceTest {
 
     @BeforeEach
     fun init() {
-        user = userRepository.save(User(name = "Demys Cota", email = "demysdcl@gmail.com"))
+        user = userRepository.save(User(id = "test", name = "Demys Cota", email = "demysdcl@gmail.com"))
         categories = categoryRepository.saveAll(createCategories())
         spots = spotService.saveAll(createSpots())
     }
@@ -62,14 +62,14 @@ internal class SpotServiceTest {
     )
 
     fun createSpots() = arrayListOf(
-            Spot(name = "Park 1", category = categories[0], location = arrayOf(-49.316584, -25.435113), createBy = user),
-            Spot(name = "Park 2", category = categories[0], location = arrayOf(-49.316585, -25.435114), createBy = user),
-            Spot(name = "Park 3", category = categories[0], location = arrayOf(-49.316586, -25.435115), createBy = user),
-            Spot(name = "Jardim Botânico", category = categories[0], location = arrayOf(-49.2453133, -25.4407956), createBy = user),
-            Spot(name = "Bosque do Alemão", category = categories[0], location = arrayOf(-49.287397, -25.405349), createBy = user),
-            Spot(name = "Museu Oscar Niermeyer", category = categories[1], location = arrayOf(-49.267196, -25.410085), createBy = user),
-            Spot(name = "Parque Tanguá", category = categories[0], location = arrayOf(-49.282461, -25.378846), createBy = user),
-            Spot(name = "Centro histórico de Curitiba", category = categories[1], location = arrayOf(-49.272255, -25.427730), createBy = user)
+            Spot(name = "Park 1", category = categories[0], location = arrayOf(-49.316584, -25.435113), createdBy = user),
+            Spot(name = "Park 2", category = categories[0], location = arrayOf(-49.316585, -25.435114), createdBy = user),
+            Spot(name = "Park 3", category = categories[0], location = arrayOf(-49.316586, -25.435115), createdBy = user),
+            Spot(name = "Jardim Botânico", category = categories[0], location = arrayOf(-49.2453133, -25.4407956), createdBy = user),
+            Spot(name = "Bosque do Alemão", category = categories[0], location = arrayOf(-49.287397, -25.405349), createdBy = user),
+            Spot(name = "Museu Oscar Niermeyer", category = categories[1], location = arrayOf(-49.267196, -25.410085), createdBy = user),
+            Spot(name = "Parque Tanguá", category = categories[0], location = arrayOf(-49.282461, -25.378846), createdBy = user),
+            Spot(name = "Centro histórico de Curitiba", category = categories[1], location = arrayOf(-49.272255, -25.427730), createdBy = user)
     )
 
 
@@ -239,6 +239,13 @@ internal class SpotServiceTest {
             spotService.incrementUpvote("wrong-id")
         }
         assertEquals("Tourist Spot not found", exception.message)
+    }
+
+    @Test
+    fun `should returns the spots created by logged user`() {
+        val spots = spotService.findByLoggedUser()
+        assertFalse(spots.isEmpty())
+        assertEquals(8, spots.size)
     }
 
 }

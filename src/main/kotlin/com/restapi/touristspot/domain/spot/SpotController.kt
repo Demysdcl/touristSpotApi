@@ -20,6 +20,9 @@ class SpotController {
     @GetMapping("/search")
     fun spotByName(@RequestParam name: String) = spotService.findByName(name)
 
+    @GetMapping("/createdBy")
+    fun spotsCreatedBy() = spotService.findByLoggedUser()
+
     @GetMapping
     fun all() = spotService.findAll()
 
@@ -51,6 +54,9 @@ class SpotController {
     fun addToFavorite(@PathVariable spotId: String) = spotService.addToFavorite(spotId)
 
     @PutMapping("/{spotId}/upvote")
-    fun incrementUpvote(@PathVariable spotId: String) = spotService.incrementUpvote(spotId)
+    fun incrementUpvote(@PathVariable spotId: String) = object {
+        val upvote: Long = spotService.incrementUpvote(spotId).upvote
+    }
+
 
 }

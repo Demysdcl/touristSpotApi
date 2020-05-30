@@ -56,7 +56,7 @@ class SpotService(private val spotRepository: SpotRepository,
                         category = categoryService.find(category),
                         location = arrayOf(longitude, latitude),
                         picture = Binary(BsonBinarySubType.BINARY, picture.bytes),
-                        createBy = temporaryUser()
+                        createdBy = temporaryUser()
                 ))
             }
 
@@ -95,11 +95,12 @@ class SpotService(private val spotRepository: SpotRepository,
                 ))
             }.orElseThrow { RuntimeException(notFoundMessage) }
 
-
     fun incrementUpvote(spotId: String) = spotRepository.findById(spotId)
             .map { spotRepository.save(it.copy(upvote = it.upvote + 1)) }
             .orElseThrow { RuntimeException(notFoundMessage) }
 
     fun temporaryUser(): User = userRepository.findById("test")
             .orElse(userRepository.save(User(id = "test", name = "Demys", email = "demysdcl@gmail.com")))
+
+    fun findByLoggedUser() = spotRepository.findByCreatedBy(temporaryUser())
 }

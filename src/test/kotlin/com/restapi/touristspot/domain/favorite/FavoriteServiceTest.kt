@@ -47,7 +47,7 @@ internal class FavoriteServiceTest {
                 name = "Park 1",
                 category = categoryRepository.save(Category("Park")),
                 location = arrayOf(-49.316584, -25.435113),
-                createBy = user
+                createdBy = user
         )
         favorite = favoriteRepository.save(Favorite(spot = spot, favoredBy = user))
     }
