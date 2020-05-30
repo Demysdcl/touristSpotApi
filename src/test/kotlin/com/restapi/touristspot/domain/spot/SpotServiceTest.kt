@@ -26,6 +26,9 @@ internal class SpotServiceTest {
     lateinit var spotService: SpotService
 
     @Autowired
+    lateinit var spotRepository: SpotRepository
+
+    @Autowired
     lateinit var userRepository: UserRepository
 
     @Autowired
@@ -50,7 +53,7 @@ internal class SpotServiceTest {
 
     @AfterEach
     fun destroy() {
-        spotService.deleteAll(spots)
+        spotRepository.deleteAll()
         userRepository.deleteAll()
         pictureRepository.deleteAll()
     }
@@ -114,7 +117,7 @@ internal class SpotServiceTest {
     }
 
     @Test
-    fun `given nonexistent name in Spot Collecion return then return Empty Optional`() {
+    fun `given nonexistent name in Spot Collecion then return Empty Optional`() {
         val expection = assertThrows(RuntimeException::class.java) {
             spotService.findByName("Cristo Redentor")
         }
@@ -125,6 +128,7 @@ internal class SpotServiceTest {
     fun `save Spot tests`() {
         `given a params and a File then save new Spot`()
         `given a name already exists thorws expecption`()
+
     }
 
     fun `given a params and a File then save new Spot`() {

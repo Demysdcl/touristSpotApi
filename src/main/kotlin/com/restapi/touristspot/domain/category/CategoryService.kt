@@ -1,5 +1,6 @@
 package com.restapi.touristspot.domain.category
 
+import com.restapi.touristspot.exception.ObjectAlreadyExistsException
 import org.springframework.stereotype.Service
 
 @Service
@@ -10,7 +11,7 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
 
     fun save(category: String): Category = categoryRepository.findById(category)
             .let {
-                if (it.isPresent) throw RuntimeException("Category already exists")
+                if (it.isPresent) throw ObjectAlreadyExistsException("Category already exists")
                 return@let categoryRepository.save(Category(category))
             }
 

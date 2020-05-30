@@ -2,6 +2,7 @@ package com.restapi.touristspot.domain.favorite
 
 import com.restapi.touristspot.domain.user.User
 import com.restapi.touristspot.domain.user.UserRepository
+import com.restapi.touristspot.exception.ObjectNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,6 +17,6 @@ class FavoriteService(
 
     fun remove(favoriteId: String): Unit = favoriteRepository.findById(favoriteId)
             .map { favoriteRepository.delete(it) }
-            .orElseThrow { RuntimeException("Favorite not found") }
+            .orElseThrow { ObjectNotFoundException("Favorite not found") }
 
 }

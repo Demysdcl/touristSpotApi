@@ -10,6 +10,8 @@ import com.restapi.touristspot.domain.picture.Picture
 import com.restapi.touristspot.domain.picture.PictureRepository
 import com.restapi.touristspot.domain.user.User
 import com.restapi.touristspot.domain.user.UserRepository
+import com.restapi.touristspot.exception.ObjectAlreadyExistsException
+import com.restapi.touristspot.exception.ObjectNotFoundException
 import org.bson.BsonBinarySubType
 import org.bson.types.Binary
 import org.springframework.data.geo.Circle
@@ -30,7 +32,7 @@ class SpotService(private val spotRepository: SpotRepository,
 ) {
 
 
-    val notFoundMessage = "Tourist Spot not found"
+    val spotNotFound = "Tourist Spot not found"
 
     fun findSpotsInFiveKm(longitude: Double, latitude: Double): List<Spot> = spotRepository.findByLocationWithin(
             Circle(Point(longitude, latitude), Distance(5.0, Metrics.KILOMETERS))
@@ -39,7 +41,7 @@ class SpotService(private val spotRepository: SpotRepository,
     fun findAll(): List<Spot> = spotRepository.findAll()
 
     fun findByName(name: String): Spot = spotRepository.findByName(name)
-            .orElseThrow { RuntimeException(notFoundMessage) }
+            .orElseThrow { ObjectNotFoundException(spotNotFound) }
 
     @Transactional
     fun saveAll(spots: List<Spot>): List<Spot> = spotRepository.saveAll(spots)
@@ -50,7 +52,7 @@ class SpotService(private val spotRepository: SpotRepository,
     @Transactional
     fun save(picture: MultipartFile, name: String, category: String, longitude: Double, latitude: Double): Spot =
             spotRepository.findByName(name).let {
-                if (it.isPresent) throw RuntimeException("Tourist spot already exists")
+                if (it.isPresent) throw ObjectAlreadyExistsException("Tourist spot already exists")
                 return@let spotRepository.save(Spot(
                         name = name,
                         category = categoryService.find(category),
@@ -64,16 +66,16 @@ class SpotService(private val spotRepository: SpotRepository,
     fun addCommentInSpot(id: String, comment: String): Comment = spotRepository.findById(id)
             .map {
                 commentRepository.save(Comment(description = comment, aboutOf = it, commentedBy = temporaryUser()))
-            }.orElseThrow { RuntimeException(notFoundMessage) }
+            }.orElseThrow { ObjectNotFoundException(spotNotFound) }
 
     fun findComments(spotId: String): List<Comment> = spotRepository.findById(spotId)
             .map { commentRepository.findByAboutOf(it) }
-            .orElseThrow { RuntimeException(notFoundMessage) }
+            .orElseThrow { ObjectNotFoundException(spotNotFound) }
 
     fun addPictures(spotId: String, files: Array<MultipartFile>): List<Picture> = spotRepository.findById(spotId)
             .map {
                 pictureRepository.saveAll(convertFileToPicture(files, it))
-            }.orElseThrow { RuntimeException(notFoundMessage) }
+            }.orElseThrow { ObjectNotFoundException(spotNotFound) }
 
     fun convertFileToPicture(files: Array<MultipartFile>, spot: Spot) = files.asList()
             .map {
@@ -85,7 +87,7 @@ class SpotService(private val spotRepository: SpotRepository,
     fun deletePicture(pictureId: String): Unit = pictureRepository.findById(pictureId)
             .filter { it.takenBy == temporaryUser() }
             .map { pictureRepository.delete(it) }
-            .orElseThrow { RuntimeException("Picture not found") }
+            .orElseThrow { ObjectNotFoundException("Picture not found") }
 
     fun addToFavorite(spotId: String) = spotRepository.findById(spotId)
             .map {
@@ -93,11 +95,11 @@ class SpotService(private val spotRepository: SpotRepository,
                         spot = it,
                         favoredBy = temporaryUser()
                 ))
-            }.orElseThrow { RuntimeException(notFoundMessage) }
+            }.orElseThrow { ObjectNotFoundException(spotNotFound) }
 
     fun incrementUpvote(spotId: String) = spotRepository.findById(spotId)
             .map { spotRepository.save(it.copy(upvote = it.upvote + 1)) }
-            .orElseThrow { RuntimeException(notFoundMessage) }
+            .orElseThrow { ObjectNotFoundException(spotNotFound) }
 
     fun temporaryUser(): User = userRepository.findById("test")
             .orElse(userRepository.save(User(id = "test", name = "Demys", email = "demysdcl@gmail.com")))
