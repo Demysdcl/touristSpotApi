@@ -208,5 +208,20 @@ internal class SpotServiceTest {
         spotService.deletePicture(pictures[0].id!!)
         assertFalse(pictureRepository.findById(pictures[0].id!!).isPresent)
     }
-    
+
+    @Test
+    fun `given a spot to favorite then save the favorite`() {
+        val favorite = spotService.addToFavorite(spots[0].id!!)
+        assertNotNull(favorite)
+        assertEquals(spots[0].id!!, favorite.spot.id)
+    }
+
+    @Test
+    fun `given given a nonexistent id Spot to add to favorite then thorws expecption`() {
+        val exception = assertThrows(RuntimeException::class.java) {
+            spotService.addToFavorite("wrong-id")
+        }
+        assertEquals("Tourist Spot not found", exception.message)
+    }
+
 }

@@ -4,6 +4,8 @@ import Spot
 import com.restapi.touristspot.domain.category.CategoryService
 import com.restapi.touristspot.domain.comment.Comment
 import com.restapi.touristspot.domain.comment.CommentRepository
+import com.restapi.touristspot.domain.favorite.Favorite
+import com.restapi.touristspot.domain.favorite.FavoriteRepository
 import com.restapi.touristspot.domain.picture.Picture
 import com.restapi.touristspot.domain.picture.PictureRepository
 import com.restapi.touristspot.domain.user.User
@@ -23,7 +25,9 @@ class SpotService(private val spotRepository: SpotRepository,
                   private val categoryService: CategoryService,
                   private val commentRepository: CommentRepository,
                   private val userRepository: UserRepository,
-                  private val pictureRepository: PictureRepository) {
+                  private val pictureRepository: PictureRepository,
+                  private val favoriteRepository: FavoriteRepository
+) {
 
 
     val notFoundMessage = "Tourist Spot not found"
@@ -82,6 +86,14 @@ class SpotService(private val spotRepository: SpotRepository,
             .filter { it.takenBy == temporaryUser() }
             .map { pictureRepository.delete(it) }
             .orElseThrow { RuntimeException("Picture not found") }
+
+    fun addToFavorite(spotId: String) = spotRepository.findById(spotId)
+            .map {
+                favoriteRepository.save(Favorite(
+                        spot = it,
+                        favoredBy = temporaryUser()
+                ))
+            }.orElseThrow { RuntimeException(notFoundMessage) }
 
 
     fun temporaryUser(): User = userRepository.findById("test")

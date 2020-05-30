@@ -41,4 +41,7 @@ class SpotController {
 
     @DeleteMapping("/{spotId}/pictures/{pictureId}")
     fun deletePicture(@PathVariable pictureId: String) = spotService.deletePicture(pictureId)
+
+    @PostMapping("/{spotId}/favorites")
+    fun addToFavorite(@PathVariable spotId: String) = spotService.addToFavorite(spotId)
 }
