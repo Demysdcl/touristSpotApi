@@ -1,6 +1,8 @@
-environment: Default
-
 spring:
+
+  thymeleaf:
+    cache: false
+
   data:
     mongodb:
       database: touristspot
