@@ -217,9 +217,26 @@ internal class SpotServiceTest {
     }
 
     @Test
-    fun `given given a nonexistent id Spot to add to favorite then thorws expecption`() {
+    fun `given given a nonexistent id Spot to add in favorites then thorws expecption`() {
         val exception = assertThrows(RuntimeException::class.java) {
             spotService.addToFavorite("wrong-id")
+        }
+        assertEquals("Tourist Spot not found", exception.message)
+    }
+
+    @Test
+    fun `given a spot id to upvote update upvote from spot`() {
+        var spot = spotService.incrementUpvote(spots[0].id!!)
+        assertEquals(1, spot.upvote)
+
+        spot = spotService.incrementUpvote(spots[0].id!!)
+        assertEquals(2, spot.upvote)
+    }
+
+    @Test
+    fun `given given a nonexistent id Spot to add increment upvote then thorws expecption`() {
+        val exception = assertThrows(RuntimeException::class.java) {
+            spotService.incrementUpvote("wrong-id")
         }
         assertEquals("Tourist Spot not found", exception.message)
     }

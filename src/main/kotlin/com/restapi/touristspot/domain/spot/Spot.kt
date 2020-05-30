@@ -11,6 +11,7 @@ data class Spot(
         @Id
         val id: String? = null,
         val name: String = "",
+        val upvote: Long = 0,
         val location: Array<Double> = emptyArray(),
         val picture: Binary = Binary(BsonBinarySubType.BINARY, ByteArray(0)),
         @DBRef

@@ -32,10 +32,12 @@ class SpotController {
     ) = spotService.save(picture, name, category, longitude, latitude)
 
     @PostMapping("/{spotId}/comments")
-    fun addCommentInSpot(@PathVariable spotId: String, @RequestBody comment: String) = spotService.addCommentInSpot(spotId, comment)
+    fun addCommentInSpot(@PathVariable spotId: String, @RequestBody comment: String) = spotService
+            .addCommentInSpot(spotId, comment)
 
     @GetMapping("/{spotId}/comments")
-    fun findComments(@PathVariable spotId: String): List<Comment> = spotService.findComments(spotId)
+    fun findComments(@PathVariable spotId: String): List<Comment> = spotService
+            .findComments(spotId)
 
     @PostMapping("/{spotId}/pictures")
     fun addPictures(@PathVariable spotId: String, pictures: Array<MultipartFile>) = spotService.addPictures(spotId, pictures)
@@ -47,4 +49,8 @@ class SpotController {
 
     @PostMapping("/{spotId}/favorites")
     fun addToFavorite(@PathVariable spotId: String) = spotService.addToFavorite(spotId)
+
+    @PutMapping("/{spotId}/upvote")
+    fun incrementUpvote(@PathVariable spotId: String) = spotService.incrementUpvote(spotId)
+
 }
