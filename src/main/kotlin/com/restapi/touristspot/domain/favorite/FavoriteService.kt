@@ -14,7 +14,7 @@ class FavoriteService(
     fun temporaryUser(): User = userRepository.findById("test")
             .orElse(userRepository.save(User(id = "test", name = "Demys", email = "demysdcl@gmail.com")))
 
-    fun remove(favoriteId: String) = favoriteRepository.findById(favoriteId)
+    fun remove(favoriteId: String): Unit = favoriteRepository.findById(favoriteId)
             .map { favoriteRepository.delete(it) }
             .orElseThrow { RuntimeException("Favorite not found") }
 

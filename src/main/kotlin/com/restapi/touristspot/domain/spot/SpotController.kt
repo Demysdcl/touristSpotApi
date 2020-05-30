@@ -2,6 +2,7 @@ package com.restapi.touristspot.domain.spot
 
 import com.restapi.touristspot.domain.comment.Comment
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -40,7 +41,9 @@ class SpotController {
     fun addPictures(@PathVariable spotId: String, pictures: Array<MultipartFile>) = spotService.addPictures(spotId, pictures)
 
     @DeleteMapping("/{spotId}/pictures/{pictureId}")
-    fun deletePicture(@PathVariable pictureId: String) = spotService.deletePicture(pictureId)
+    fun deletePicture(@PathVariable pictureId: String) = ResponseEntity.noContent()
+            .build<Unit>()
+            .apply { spotService.deletePicture(pictureId) }
 
     @PostMapping("/{spotId}/favorites")
     fun addToFavorite(@PathVariable spotId: String) = spotService.addToFavorite(spotId)
