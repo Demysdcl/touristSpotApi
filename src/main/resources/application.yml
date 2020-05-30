@@ -1,14 +1,12 @@
 spring:
-
-  thymeleaf:
-    cache: false
-
+  datasource.driverClassName: MongoDB
   data:
     mongodb:
       database: touristspot
-
+      uri: mongodb://mongodb/demorest
+      host: mongodb
+      port: 27017
 ---
-
 # Development configurations
 spring:
   profiles:
@@ -18,7 +16,6 @@ spring:
       database: touristspot
 
 ---
-
 # Testing configurations
 spring:
   profiles:
