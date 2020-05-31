@@ -82,10 +82,7 @@ implementation("org.springframework.security.oauth:spring-security-oauth2:2.2.6.
 ### Security
 
 ```
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-security</artifactId>
-</dependency>
+implementation("org.springframework.boot:spring-boot-starter-security")
 ```
 
 Spring Boot Starter Security main username is `wipro` and password is `123`
