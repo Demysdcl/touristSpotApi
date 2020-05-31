@@ -85,9 +85,6 @@ implementation("org.springframework.security.oauth:spring-security-oauth2:2.2.6.
 implementation("org.springframework.boot:spring-boot-starter-security")
 ```
 
-Spring Boot Starter Security main username is `wipro` and password is `123`
-
-
 Automated dependency updates done via [Dependabot](https://dependabot.com/)
 
 ### URLs
