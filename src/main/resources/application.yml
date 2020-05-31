@@ -9,13 +9,12 @@ app:
 
 spring:
   profiles:
-    - prod
+    - production
   data:
     mongodb:
       database: touristspot
-      uri: mongodb://mongodb/touristspot
-      host: mongodb
-      port: 27017
+      uri: mongodb+srv://omnistackjs:<password>@cluster0-othjt.mongodb.net/test?retryWrites=true&w=majority
+
 ---
 # Development configurations
 
