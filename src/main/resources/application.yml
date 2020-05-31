@@ -26,7 +26,7 @@ spring:
   data:
     mongodb:
       database: touristspot
-      uri:
+
 
 ---
 # Testing configurations
@@ -36,4 +36,4 @@ spring:
   data:
     mongodb:
       database: test
-      uri:
+
