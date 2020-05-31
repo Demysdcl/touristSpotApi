@@ -92,7 +92,8 @@ Automated dependency updates done via [Dependabot](https://dependabot.com/)
 
 |  URL |  Method |
 |----------|--------------|
-|`http://localhost:8080/category`                                    | POST |
+|`http://localhost:8080/categories`                                  | GET |
+|`http://localhost:8080/categories`                                  | POST |
 |`http://localhost:8080/favorites`                                   | GET |
 |`http://localhost:8080/favorites/{id}`                              | DELETE |
 |`http://localhost:8080/spot`                                        | GET |

@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 
-@Document(collection = "Spot")
+@Document(collection = "spot")
 data class Spot(
         @Id
         val id: String? = null,

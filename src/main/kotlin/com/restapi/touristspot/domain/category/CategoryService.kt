@@ -15,4 +15,17 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
                 return@let categoryRepository.save(Category(category))
             }
 
+    fun all(): List<Category> = categoryRepository.findAll()
+            .let {
+                when {
+                    it.isEmpty() -> categoryRepository.saveAll(listOf(
+                            Category("Park"),
+                            Category("Museum"),
+                            Category("Theater"),
+                            Category("Monument")
+                    ))
+                    else -> it
+                }
+            }
+
 }
