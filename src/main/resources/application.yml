@@ -26,7 +26,6 @@ spring:
   data:
     mongodb:
       database: touristspot
-      uri: mongodb+srv://omnistackjs:DKLT2Jzbcu28Nd4@cluster0-othjt.mongodb.net/test?retryWrites=true&w=majority
 
 ---
 # Testing configurations
