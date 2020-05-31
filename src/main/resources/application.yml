@@ -5,6 +5,12 @@ app:
     id: touristspot
     secret: 123
 
+spring:
+  data:
+    mongodb:
+      database: touristspot
+      uri: mongodb+srv://omnistackjs:DKLT2Jzbcu28Nd4@cluster0-othjt.mongodb.net/test?retryWrites=true&w=majority
+
 ---
 host.full.dns.auth.link: https://touristspotrest.herokuapp.com/
 spring:
@@ -26,6 +32,7 @@ spring:
   data:
     mongodb:
       database: touristspot
+      uri:
 
 ---
 # Testing configurations
@@ -35,3 +42,4 @@ spring:
   data:
     mongodb:
       database: test
+      uri:
