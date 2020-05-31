@@ -1,5 +1,6 @@
 package com.restapi.touristspot.domain.category
 
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,6 +13,14 @@ internal class CategoryServiceTest {
 
     @Autowired
     lateinit var categoryService: CategoryService
+
+    @Autowired
+    lateinit var categoryRepository: CategoryRepository
+
+    @AfterEach
+    fun destroy() {
+        categoryRepository.deleteAll()
+    }
 
     @Test
     fun `given a new category then save it`() {

@@ -1,13 +1,26 @@
+#Swagger 2
+host.full.dns.auth.link: http://localhost:8080
+app:
+  client:
+    id: touristspot
+    secret: 123
+
+---
+
 spring:
-  datasource.driverClassName: MongoDB
+  profiles:
+    - prod
   data:
     mongodb:
       database: touristspot
-      uri: mongodb://mongodb/demorest
+      uri: mongodb://mongodb/touristspot
       host: mongodb
       port: 27017
 ---
 # Development configurations
+
+host.full.dns.auth.link: http://localhost:8080
+
 spring:
   profiles:
     - development

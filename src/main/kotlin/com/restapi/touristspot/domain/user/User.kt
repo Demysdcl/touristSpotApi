@@ -8,7 +8,8 @@ data class User(
         @Id
         val id: String? = null,
         val name: String = "",
-        val email: String = ""
+        val email: String = "",
+        val password: String = ""
 ) {
     override fun equals(other: Any?) = other === this ||
             (other is User && id == other.id)
