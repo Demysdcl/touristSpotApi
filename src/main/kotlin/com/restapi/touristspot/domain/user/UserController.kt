@@ -4,8 +4,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices
 import org.springframework.security.oauth2.provider.token.TokenStore
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.postForEntity
 import java.security.Principal
 import javax.servlet.http.HttpServletRequest
 
@@ -23,11 +21,6 @@ class UserController(
             ResponseEntity.noContent().build<Unit>().apply {
                 userService.registerUser(user)
             }
-
-    @PostMapping("/signin")
-    fun signin(@RequestParam email: String, @RequestParam password: String) = RestTemplate()
-            .apply { }
-            .postForEntity<String>("localhost:8080/oauth/token?grant_type=password&username=$email&password=$password", null)
 
     @GetMapping("/main")
     fun getMainUser(principal: Principal) = userService.findByEmail(principal.name)

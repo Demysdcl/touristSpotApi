@@ -1,5 +1,7 @@
 # Spring Boot Application productApi
 
+[live url](https://touristspotrest.herokuapp.com/)
+
 ## Built With
 
 *   [Kotlin](https://kotlinlang.org/) - Programming Language
@@ -12,8 +14,9 @@
 * 	[JUnit 5](https://junit.org/junit5/) - Open-Source software friendly testing framework for Java
 ## Running the application locally
 
-There are several ways to run a Spring Boot application on your local machine. One way is to execute the `main` method in the `com.wipro.productApi.ProductApiApplication` class from your IDE.
+There are several ways to run a Spring Boot application on your local machine. One way is to execute the `main` method in the `com.restapi.touristspot.ProductApiApplication` class from your IDE.
 
+- Install or get a mongodb image from docker
 - Download the zip or clone the Git repository.
 - Unzip the zip file (if you downloaded one)
 - Open Command Prompt and Change directory (cd) to folder containing pom.xml
@@ -23,7 +26,7 @@ There are several ways to run a Spring Boot application on your local machine. O
 - Choose the Spring Boot Application file (search for @SpringBootApplication)
 - Right Click on the file and Run as Java Application
 
-Alternatively you can use the [Spring Boot Maven plugin](https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html) like so:
+Alternatively you can use the [Spring Boot Gradle plugin](https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/html/) like so:
 
 ```shell
 gradlew bootRun
@@ -35,11 +38,23 @@ gradlew bootRun
 implementation("org.springframework.security.oauth:spring-security-oauth2:2.2.6.RELEASE")
 ```
 
+### Create a User
+- `Method` - POST
+- `URL` - localhost:8080/users/signup
+- `Request body` -
+```json
+{
+    "id": null,
+    "name": "Demys Cota de Lima",
+    "email": "demys_dcl@hotmail.com",
+    "password": "456"
+}
+```
 #### Request token
 - `Method` - POST
 - `URL` - http://localhost:8080/oauth/token?grant_type=password&username={username}&password={password}
 - `Response` - 
-```
+```json
 {
   "access_token":"MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
   "token_type":"bearer",
@@ -81,13 +96,19 @@ Automated dependency updates done via [Dependabot](https://dependabot.com/)
 
 |  URL |  Method |
 |----------|--------------|
-|`http://localhost:8080/products`                                | POST |
-|`http://localhost:8080/products/{id}`                           | GET | 
-|`http://localhost:8080/products/{id}`                           | PUT | 
-|`http://localhost:8080/products/{id}`                           | DELETE |
-|`http://localhost:8080/products/{id}/disable`                   | PUT | 
-|`http://localhost:8080/products/enable?page=1&size=10`          | GET | 
-|`http://localhost:8080/products/disable?page=1&size=10`         | GET | 
+|`http://localhost:8080/category`                                    | POST |
+|`http://localhost:8080/favorites`                                   | GET |
+|`http://localhost:8080/favorites/{id}`                              | DELETE |
+|`http://localhost:8080/spot`                                        | GET |
+|`http://localhost:8080/spot`                                        | POST |
+|`http://localhost:8080/spot/{id}/comments`                          | GET | 
+|`http://localhost:8080/spot/{id}/comments`                          | POST | 
+|`http://localhost:8080/spot/{id}/pictures`                          | POST |
+|`http://localhost:8080/spot/{id}/pictures/{pictureId}`              | DELETE | 
+|`http://localhost:8080/spots/{id}/upvote`                           | PUT | 
+|`http://localhost:8080/spots/createdBy`                             | GET | 
+|`http://localhost:8080/spots/near?longitude={lon}&latitude={lat}`   | GET | 
+|`http://localhost:8080/spots/search?name={name}`                    | GET | 
 
 ## Documentation
 
@@ -105,13 +126,17 @@ The project (a.k.a. project directory) has a particular directory structure. A r
 ├── Spring Elements
 ├── src
 │   └── main
-│       └── java
-│           ├── com.wipro.productApi
-│           ├── com.wipro.productApi.config
-│           ├── com.wipro.productApi.context.product
-│           ├── com.wipro.productApi.context.user
-│           ├── com.wipro.productApi.exception
-│           └── com.wipro.productApi.security
+│       └── kotlin
+│           ├── com.restapi.touristspot
+│           ├── com.restapi.touristspot.config
+│           ├── com.restapi.touristspot.domain.category
+│           ├── com.restapi.touristspot.domain.comment
+│           ├── com.restapi.touristspot.domain.favorite
+│           ├── com.restapi.touristspot.domain.picture
+│           ├── com.restapi.touristspot.domain.spot
+│           ├── com.restapi.touristspot.expection
+│           ├── com.restapi.touristspot.security
+│           └── com.restapi.touristspot.util
 ├── src
 │   └── main
 │       └── resources
@@ -124,34 +149,41 @@ The project (a.k.a. project directory) has a particular directory structure. A r
 │                 └──V4__load_user_table.sql
 ├── src
 │   └── test
-│       └── java
-│           ├── com.wipro.productApi
-│           ├── com.wipro.productApi.context.product
-│           └── com.wipro.productApi.context.user
+│       └── kotlin
+│           ├── com.restapi.touristspot
+│           ├── com.restapi.touristspot.domain.category
+│           ├── com.restapi.touristspot.domain.favorite
+│           ├── com.restapi.touristspot.domain.spot
+│           └── com.restapi.touristspot.context.user
 │
 ├── JRE System Library
-├── Maven Dependencies
+├── Gradle Dependencies
 ├── src
-├── target
+├── .dockerignore
+├── .gitignore
+├── build
+├── gradlew
+├── gradlew.bat
 ├── HELP.md
-├── mvnw
-├── mvnw.cmd
-├── pom.xml
-├── productApi.iml
-└── README.md
+├── README.md
+├── settings.gradle.kts
+├── Tourist Spot.postman_v2.1_collection.json
+├── Tourist Spot.postman_v2_collection.json
+└── touristspot.iml
 ```
 
 ## packages
 
-- `context` — to hold our project context;
-- `user` — to hold our users;
-- `product` — to hold our product;
-- `security` — security configuration;
 - `config` — to configure swagger and filter;
+- `domain/` — to hold our project context;
+- `exception` — to hold our exceptions;
+- `security` — security configuration;
+- `util` - utilities
+
 
 - `resources/` - Contains all the static resources, templates and property files.
 - `resources/application.yml` - It contains application-wide properties. Spring reads the properties defined in this file to configure your application. You can define server’s default port, server’s context path, database URLs etc, in this file.
 
 - `test/` - contains unit and integration tests
 
-- `pom.xml` - contains all the project dependencies
+- `build.gradle.kts` - contains all the project dependencies
