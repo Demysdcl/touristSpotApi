@@ -17,16 +17,5 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
             }
 
     fun all(): List<Category> = categoryRepository.findAll()
-            .let {
-                when {
-                    it.isEmpty() -> categoryRepository.saveAll(listOf(
-                            Category("Park"),
-                            Category("Museum"),
-                            Category("Theater"),
-                            Category("Monument")
-                    ))
-                    else -> it
-                }
-            }
 
 }
