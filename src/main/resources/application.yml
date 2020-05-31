@@ -26,6 +26,7 @@ spring:
     - development
   data:
     mongodb:
+      host: localhost
       database: touristspot
 
 ---

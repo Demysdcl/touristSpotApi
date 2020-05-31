@@ -14,7 +14,8 @@ import javax.servlet.http.HttpServletRequest
 class UserController(
         private val userService: UserService,
         private val tokenServices: DefaultTokenServices,
-        private val tokenStore: TokenStore
+        private val tokenStore: TokenStore,
+        private val userRepository: UserRepository
 ) {
 
     @PostMapping("/signup")
