@@ -6,14 +6,14 @@ app:
     secret: 123
 
 ---
-
+host.full.dns.auth.link: https://touristspotrest.herokuapp.com/
 spring:
   profiles:
     - production
   data:
     mongodb:
       database: touristspot
-      uri: mongodb+srv://omnistackjs:<password>@cluster0-othjt.mongodb.net/test?retryWrites=true&w=majority
+      uri: mongodb+srv://omnistackjs:omnistackjs@cluster0-othjt.mongodb.net/test?retryWrites=true&w=majority
 
 ---
 # Development configurations
