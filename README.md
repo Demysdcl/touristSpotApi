@@ -108,7 +108,9 @@ Automated dependency updates done via [Dependabot](https://dependabot.com/)
 |`http://localhost:8080/spots/{id}/upvote`                           | PUT | 
 |`http://localhost:8080/spots/createdBy`                             | GET | 
 |`http://localhost:8080/spots/near?longitude={lon}&latitude={lat}`   | GET | 
-|`http://localhost:8080/spots/search?name={name}`                    | GET | 
+|`http://localhost:8080/users/loout`                                 | GET | 
+|`http://localhost:8080/users/main`                                  | GET |
+|`http://localhost:8080/users/signup`                                | POST |
 
 ## Documentation
 
