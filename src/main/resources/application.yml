@@ -13,7 +13,7 @@ spring:
   data:
     mongodb:
       database: touristspot
-      uri: mongodb+srv://omnistackjs:DKLT2Jzbcu28Nd4@cluster0-othjt.mongodb.net/test?retryWrites=true&w=majority
+      uri: mongodb+srv://omnistackjs:EKMS2iyvR49o4wIZ@cluster0-othjt.mongodb.net/test?retryWrites=true&w=majority
 
 ---
 # Development configurations
