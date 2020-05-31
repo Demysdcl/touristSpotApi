@@ -3,13 +3,19 @@ package com.restapi.touristspot.domain.spot
 import Spot
 import com.restapi.touristspot.domain.category.Category
 import com.restapi.touristspot.domain.category.CategoryRepository
+import com.restapi.touristspot.domain.category.CategoryService
+import com.restapi.touristspot.domain.comment.CommentRepository
+import com.restapi.touristspot.domain.favorite.FavoriteRepository
 import com.restapi.touristspot.domain.picture.PictureRepository
 import com.restapi.touristspot.domain.user.User
 import com.restapi.touristspot.domain.user.UserRepository
+import com.restapi.touristspot.domain.user.UserService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mock
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.mock.web.MockMultipartFile
@@ -21,10 +27,6 @@ import java.util.stream.IntStream
 @ActiveProfiles("test")
 internal class SpotServiceTest {
 
-
-    @Autowired
-    lateinit var spotService: SpotService
-
     @Autowired
     lateinit var spotRepository: SpotRepository
 
@@ -32,7 +34,13 @@ internal class SpotServiceTest {
     lateinit var userRepository: UserRepository
 
     @Autowired
-    lateinit var pictureRepository: PictureRepository
+    lateinit var cateoryService: CategoryService
+
+    @Autowired
+    lateinit var commentRepository: CommentRepository
+
+    @Mock
+    lateinit var userService: UserService
 
     @Autowired
     lateinit var categoryRepository: CategoryRepository
@@ -43,10 +51,20 @@ internal class SpotServiceTest {
 
     lateinit var categories: List<Category>
 
+    lateinit var spotService: SpotService
+
+    @Autowired
+    lateinit var pictureRepository: PictureRepository
+
+    @Autowired
+    lateinit var favoriteRepository: FavoriteRepository
+
 
     @BeforeEach
     fun init() {
         user = userRepository.save(User(id = "test", name = "Demys Cota", email = "demysdcl@gmail.com"))
+        Mockito.`when`(userService.getLoggedUser()).thenReturn(user)
+        spotService = SpotService(spotRepository, cateoryService, commentRepository, userService, pictureRepository, favoriteRepository)
         categories = categoryRepository.saveAll(createCategories())
         spots = spotService.saveAll(createSpots())
     }

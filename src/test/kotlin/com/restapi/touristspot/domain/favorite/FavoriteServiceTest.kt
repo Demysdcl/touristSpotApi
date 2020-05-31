@@ -5,12 +5,15 @@ import com.restapi.touristspot.domain.category.Category
 import com.restapi.touristspot.domain.category.CategoryRepository
 import com.restapi.touristspot.domain.user.User
 import com.restapi.touristspot.domain.user.UserRepository
+import com.restapi.touristspot.domain.user.UserService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mock
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -18,9 +21,6 @@ import org.springframework.test.context.ActiveProfiles
 @SpringBootTest
 @ActiveProfiles("test")
 internal class FavoriteServiceTest {
-
-    @Autowired
-    lateinit var favoriteService: FavoriteService
 
     @Autowired
     lateinit var spotRepository: FavoriteRepository
@@ -34,11 +34,16 @@ internal class FavoriteServiceTest {
     @Autowired
     lateinit var favoriteRepository: FavoriteRepository
 
+    @Mock
+    lateinit var userService: UserService
+
     lateinit var spot: Spot
 
     lateinit var favorite: Favorite
 
     lateinit var user: User
+
+    lateinit var favoriteService: FavoriteService
 
     @BeforeEach
     fun init() {
@@ -49,6 +54,8 @@ internal class FavoriteServiceTest {
                 location = arrayOf(-49.316584, -25.435113),
                 createdBy = user
         )
+        Mockito.`when`(userService.getLoggedUser()).thenReturn(user)
+        favoriteService = FavoriteService(userService, favoriteRepository)
         favorite = favoriteRepository.save(Favorite(spot = spot, favoredBy = user))
     }
 

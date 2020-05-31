@@ -8,8 +8,7 @@ import com.restapi.touristspot.domain.favorite.Favorite
 import com.restapi.touristspot.domain.favorite.FavoriteRepository
 import com.restapi.touristspot.domain.picture.Picture
 import com.restapi.touristspot.domain.picture.PictureRepository
-import com.restapi.touristspot.domain.user.User
-import com.restapi.touristspot.domain.user.UserRepository
+import com.restapi.touristspot.domain.user.UserService
 import com.restapi.touristspot.exception.ObjectAlreadyExistsException
 import com.restapi.touristspot.exception.ObjectNotFoundException
 import org.bson.BsonBinarySubType
@@ -26,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile
 class SpotService(private val spotRepository: SpotRepository,
                   private val categoryService: CategoryService,
                   private val commentRepository: CommentRepository,
-                  private val userRepository: UserRepository,
+                  private val userService: UserService,
                   private val pictureRepository: PictureRepository,
                   private val favoriteRepository: FavoriteRepository
 ) {
@@ -58,14 +57,14 @@ class SpotService(private val spotRepository: SpotRepository,
                         category = categoryService.find(category),
                         location = arrayOf(longitude, latitude),
                         picture = Binary(BsonBinarySubType.BINARY, picture.bytes),
-                        createdBy = temporaryUser()
+                        createdBy = userService.getLoggedUser()
                 ))
             }
 
     @Transactional
     fun addCommentInSpot(id: String, comment: String): Comment = spotRepository.findById(id)
             .map {
-                commentRepository.save(Comment(description = comment, aboutOf = it, commentedBy = temporaryUser()))
+                commentRepository.save(Comment(description = comment, aboutOf = it, commentedBy = userService.getLoggedUser()))
             }.orElseThrow { ObjectNotFoundException(spotNotFound) }
 
     fun findComments(spotId: String): List<Comment> = spotRepository.findById(spotId)
@@ -79,13 +78,13 @@ class SpotService(private val spotRepository: SpotRepository,
 
     fun convertFileToPicture(files: Array<MultipartFile>, spot: Spot) = files.asList()
             .map {
-                Picture(takenBy = temporaryUser(),
+                Picture(takenBy = userService.getLoggedUser(),
                         image = Binary(BsonBinarySubType.BINARY, it.bytes),
                         from = spot)
             }
 
     fun deletePicture(pictureId: String): Unit = pictureRepository.findById(pictureId)
-            .filter { it.takenBy == temporaryUser() }
+            .filter { it.takenBy == userService.getLoggedUser() }
             .map { pictureRepository.delete(it) }
             .orElseThrow { ObjectNotFoundException("Picture not found") }
 
@@ -93,7 +92,7 @@ class SpotService(private val spotRepository: SpotRepository,
             .map {
                 favoriteRepository.save(Favorite(
                         spot = it,
-                        favoredBy = temporaryUser()
+                        favoredBy = userService.getLoggedUser()
                 ))
             }.orElseThrow { ObjectNotFoundException(spotNotFound) }
 
@@ -101,8 +100,6 @@ class SpotService(private val spotRepository: SpotRepository,
             .map { spotRepository.save(it.copy(upvote = it.upvote + 1)) }
             .orElseThrow { ObjectNotFoundException(spotNotFound) }
 
-    fun temporaryUser(): User = userRepository.findById("test")
-            .orElse(userRepository.save(User(id = "test", name = "Demys", email = "demysdcl@gmail.com")))
 
-    fun findByLoggedUser() = spotRepository.findByCreatedBy(temporaryUser())
+    fun findByLoggedUser() = spotRepository.findByCreatedBy(userService.getLoggedUser())
 }

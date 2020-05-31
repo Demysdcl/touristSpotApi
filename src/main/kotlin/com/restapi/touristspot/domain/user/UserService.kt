@@ -4,6 +4,8 @@ import com.restapi.touristspot.domain.token.VerificationToken
 import com.restapi.touristspot.domain.token.VerificationTokenRepository
 import com.restapi.touristspot.exception.ObjectAlreadyExistsException
 import com.restapi.touristspot.exception.ObjectNotFoundException
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
@@ -20,7 +22,7 @@ class UserService(private val passwordEncoder: PasswordEncoder,
                 if (it.isEmpty()) throw ObjectNotFoundException(" Any user not found by e-mail $email")
                 it[0]
             }
-    
+
 
     fun registerUser(user: User): User = userRepository.findByEmail(user.email)
             .let {
@@ -53,4 +55,16 @@ class UserService(private val passwordEncoder: PasswordEncoder,
     fun getVerificationTokenByToken(token: String): VerificationToken =
             verificationTokenRepository.findByToken(token)
                     .orElseThrow { ObjectNotFoundException("Token not found") }
+
+    fun getLoggedUser() = findByEmail(getLeggedUserEmail())
+
+    fun getLeggedUserEmail() = SecurityContextHolder.getContext().authentication.principal
+            .let {
+                when {
+                    it is UserDetails -> it.username
+                    else -> it.toString()
+                }
+            }
+
+
 }
