@@ -20,7 +20,7 @@ class UserService(private val passwordEncoder: PasswordEncoder,
                 if (it.isEmpty()) throw ObjectNotFoundException(" Any user not found by e-mail $email")
                 it[0]
             }
-
+    
 
     fun registerUser(user: User): User = userRepository.findByEmail(user.email)
             .let {
