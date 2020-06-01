@@ -23,7 +23,7 @@ There are several ways to run a Spring Boot application on your local machine. O
 - Unzip the zip file (if you downloaded one)
 - Open Command Prompt and Change directory (cd) to folder containing pom.xml
 - Open Intellij or Eclipse 
-   - File -> Import -> Existing Maven Project -> Navigate to the folder where you unzipped the zip
+   - File -> Import -> Existing Gradle Project -> Navigate to the folder where you unzipped the zip
    - Select the project
 - Choose the Spring Boot Application file (search for @SpringBootApplication)
 - Right Click on the file and Run as Java Application
