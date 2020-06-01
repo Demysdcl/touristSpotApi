@@ -114,7 +114,7 @@ Automated dependency updates done via [Dependabot](https://dependabot.com/)
 * [Swagger](http://localhost:8080/swagger-ui.html) - Documentation & Testing
 
 It is needed to do the authentication.
-Pressed the button `Authorize` and inform username `wipro` and password `123`
+Pressed the button `Authorize` and inform username `email` and password `password`
 
 ## Files and Directories
 
