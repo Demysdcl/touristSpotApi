@@ -6,6 +6,7 @@ app:
     secret: 123
 
 ---
+# Production configurations
 host.full.dns.auth.link: https://touristspotrest.herokuapp.com/
 spring:
   profiles:
@@ -34,4 +35,18 @@ spring:
   data:
     mongodb:
       database: test
+
+---
+# Production configurations
+host.full.dns.auth.link: https://touristspotrest.herokuapp.com/
+spring:
+  profiles:
+    - docker
+  data:
+    mongodb:
+      database: touristspot
+      host: mongo
+      port: 27017
+
+
 
